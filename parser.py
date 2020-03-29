@@ -18,12 +18,58 @@ app = Flask(__name__)
 
 def get_custom_filters():
     import filters
+    from ansible.plugins.filter import core
+    from ansible.plugins.filter import division
+    from ansible.plugins.filter import ipaddr
+    from ansible.plugins.filter import json_query
+    from ansible.plugins.filter import k8s
+    from ansible.plugins.filter import mathstuff
+    from ansible.plugins.filter import network
+    from ansible.plugins.filter import urls
+    from ansible.plugins.filter import urlsplit
+
+
     custom_filters = {}
     for m in getmembers(filters):
         if m[0].startswith('filter_') and isfunction(m[1]):
             filter_name = m[0][7:]
             custom_filters[filter_name] = m[1]
-
+    for m in getmembers(core):
+        if not m[0].startswith('_') and isfunction(m[1]):
+          filter_name = m[0]
+          custom_filters[filter_name] = m[1]
+    for m in getmembers(division):
+        if not m[0].startswith('_') and isfunction(m[1]):
+          filter_name = m[0]
+          custom_filters[filter_name] = m[1]
+    for m in getmembers(ipaddr):
+        if not m[0].startswith('_') and isfunction(m[1]):
+          filter_name = m[0]
+          custom_filters[filter_name] = m[1]
+    for m in getmembers(json_query):
+        if not m[0].startswith('_') and isfunction(m[1]):
+          filter_name = m[0]
+          custom_filters[filter_name] = m[1]
+    for m in getmembers(k8s):
+        if not m[0].startswith('_') and isfunction(m[1]):
+          filter_name = m[0]
+          custom_filters[filter_name] = m[1]
+    for m in getmembers(mathstuff):
+        if not m[0].startswith('_') and isfunction(m[1]):
+          filter_name = m[0]
+          custom_filters[filter_name] = m[1]
+    for m in getmembers(network):
+        if not m[0].startswith('_') and isfunction(m[1]):
+          filter_name = m[0]
+          custom_filters[filter_name] = m[1]
+    for m in getmembers(urls):
+        if not m[0].startswith('_') and isfunction(m[1]):
+          filter_name = m[0]
+          custom_filters[filter_name] = m[1]
+    for m in getmembers(urlsplit):
+        if not m[0].startswith('_') and isfunction(m[1]):
+          filter_name = m[0]
+          custom_filters[filter_name] = m[1]
     return custom_filters
 
 
