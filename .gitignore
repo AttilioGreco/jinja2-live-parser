@@ -21,6 +21,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+static/node_modules
 
 # Installer logs
 pip-log.txt
