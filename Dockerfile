@@ -1,25 +1,31 @@
-###################################
-# Jinja2 live parser Dockerfile
-#
-# Version: 0.1
-# Author:  Sonu K. Meena(sahilsk)<sonukr666@gmail.com >
-###################################
+# ###################################
+# # Jinja2 live parser Dockerfile
+# #
+# # Version: 0.1
+# # Author:  Sonu K. Meena(sahilsk)<sonukr666@gmail.com >
+# ###################################
+# 
+FROM alpine:latest as runtime
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev python3-dev libffi-dev libressl-dev pcre-dev
+RUN apk add --no-cache python3 \
+  uwsgi \
+  uwsgi-python3 \
+  uwsgi-http \
+  uwsgi-gevent
 
-# Pull base image.
-FROM python:2.7
+RUN apk add --no-cache --update
+RUN adduser app -h /opt/app/ -u 1100 -D -S -G uwsgi -s /sbin/nologin
 
-RUN git clone https://github.com/qn7o/jinja2-live-parser.git /data
+RUN python3 -m venv /opt/venv
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-WORKDIR /data
+COPY . /opt/app
+WORKDIR /opt/app
+RUN pip3 install -r requirements.txt
+RUN apk del .build-deps gcc musl-dev python3-dev libffi-dev libressl-dev pcre-dev
 
-# Install dependencies
-RUN pip install -r requirements.txt
-
-# Change bind host
-RUN sed -i 's/host=config.HOST/host="0.0.0.0"/g' parser.py
-
-# Expose port to Host
-EXPOSE 5000
+EXPOSE 8080
 
 # Define default command.
-CMD ["python", "parser.py"]
+CMD ["/usr/sbin/uwsgi", "/opt/app/uwsgi.ini"]
