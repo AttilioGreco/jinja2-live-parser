@@ -25,3 +25,38 @@ Buildin filter get from Ansible filters
 ## Preview
 
 [preview](https://jinja2.agreco.it/)
+
+## Install with docker
+```bash
+docker run -d -p 8080:8080 attiliogreco96/jinja2-live-parser
+```
+
+## install uwsgi server in emperor mode.
+
+```
+[uwsgi]
+plugin=python36
+projectname = jinja2
+
+#config
+chdir = path-to-app
+home = path-to-venv
+
+wsgi-file = path-to-app/app.py
+callable = app
+vacuum = true
+
+logto= /log-file/jinja2.log
+
+# Worker handling
+cheaper-algo=spare2
+cheaper=1
+cheaper-initial=2
+processes=4
+cheaper-step=1
+
+# Stats
+socket = /var/run/uwsgi/jinja2.sock
+memory-report=true
+stats=/run/uwsgi/stats/jinja2-live-parser.sock
+```
